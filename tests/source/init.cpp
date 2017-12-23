@@ -1,6 +1,5 @@
 #include <rsa.hpp>
 #include <catch.hpp>
-#include <vector>
 
 SCENARIO("check every uniCODE")
 {
@@ -25,7 +24,8 @@ SCENARIO("check every uniCODE")
 	}
 	
 	bool check = false;
-	if (char_codes == crypted_codes){
+	if (char_codes == crypted_codes)
+	{
 		check = true;
 	}
 	
