@@ -10,17 +10,17 @@ SCENARIO("check every uniCODE")
 	}
 	
 	Rsa rsa;
-	Key keys = rsa.produce_keys();
+	Key keys = rsa.getKeys();
 
 	std::vector<long> crypted_codes;
 	for (unsigned int i = 0; i < char_codes.size(); ++i)
 	{
-		crypted_codes.push_back(rsa.endecrypt(char_codes.at(i),keys.ekey,keys.pkey));
+		crypted_codes.push_back(rsa.endecrypt(char_codes.at(i),keys.exp,keys.pub));
 	}
 	
 	for (auto &it: crypted_codes)
 	{
-		it = rsa.endecrypt(it,keys.dkey,keys.pkey);
+		it = rsa.endecrypt(it,keys.dkey,keys.pub);
 	}
 	
 	bool check = false;

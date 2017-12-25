@@ -1,89 +1,87 @@
 #include "rsa.hpp"
-
-
 using namespace std;
 
-Rsa::Rsa()
-{
-}
+Rsa::Rsa(){}
 
-Rsa::~Rsa()
-{
-}
+Rsa::~Rsa(){}
 
-long Rsa::endecrypt(const long msg, const long key, const long pkey)
+
+/************************************
+ * Шифрование/дешифрование сообщения (числа)
+ * *********************************/
+long Rsa::endecrypt(const long mess, const long key, const long publ)
 {
-    long msg_des = 1;
-    long root = msg;
+    long getMess = 1;
+    long root = mess;
     long index = key;
     while (index)
     {
         if (index & 1)
-            msg_des = (msg_des * root) % pkey;
+            getMess = (getMess * root) % publ;
         index >>= 1;
-        root = (root * root) % pkey;
+        root = (root * root) % publ;
     }
-    return msg_des;
+    return getMess;
 }
 
 /************************************
  * Генерация ключей
  * *********************************/
-Key Rsa::produce_keys()
+Key Rsa::getKeys()
 {
-    long prime1 = produce_prime();
-    long prime2 = produce_prime();
+	long prime1 = getPrime();
+    long prime2 = getPrime();
     while (prime2 == prime1)
-        prime2 = produce_prime();
+        prime2 = getPrime();
 
     Key key;
-    long orla = produce_orla(prime1, prime2);
-    key.pkey = produce_pkey(prime1, prime2);
-    key.ekey = produce_ekey(orla);
-    key.dkey = produce_dkey(key.ekey, orla);
+    long euler = getEuler(prime1, prime2);
+    key.pub = getPub(prime1, prime2);
+    key.exp = getExp(euler);
+    key.dkey = getDKey(key.exp, euler);
     return key;
 }
 
 /************************************
  * Генерация публичного ключа
  * *********************************/
-long Rsa::produce_pkey(const long prime1, const long prime2)
+long Rsa::getPub(const long p1, const long p2)
 {
-    return prime1 * prime2;
+    return p1 * p2;
 }
 
 /************************************
  * Генерация значения функции Эйлера
  * *********************************/
-long Rsa::produce_orla(const long prime1, const long prime2)
+long Rsa::getEuler(const long p1, const long p2)
 {
-    return (prime1 - 1) * (prime2 - 1);
+    return (p1 - 1) * (p2 - 1);
 }
 
 /************************************
  *	Генерация открытой экспоненты
  * *********************************/
-long Rsa::produce_ekey(const long orla)
+long Rsa::getExp(const long euler)
 {
-    long ekey;
+    long exp;
     while (true)
     {
-        ekey = rand() % orla;
-        if (ekey >= 2 && produce_gcd(ekey, orla) == 1)
+        exp = rand() % euler;
+        if (exp >= 2 && getGCD(exp, euler) == 1)
             break;
     }
-    return ekey;
+    return exp;
 }
 
 /************************************
  * Генерация приватного ключа (декриптора)
  * *********************************/
-long Rsa::produce_dkey(const long ekey, const long orla)
+long Rsa::getDKey(const long exp, const long euler)
 {
-    long dkey = orla / ekey;
+    long dkey = euler / exp;
     while (true)
     {
-        if (((dkey * ekey) % orla) == 1)
+        if (((dkey * exp) % euler) == 1)
             break;
         else
             ++dkey;
@@ -95,14 +93,14 @@ long Rsa::produce_dkey(const long ekey, const long orla)
  * Генерация случайных чисел в промежутке
  * от 100 включительно до 200
  * *********************************/
-long Rsa::produce_prime()
+long Rsa::getPrime()
 {
     long prime = 0;
     srand(time(0));
     while (true)
     {
         prime = rand() % 100 + 100;
-        if (is_prime(prime))
+        if (isPrime(prime))
             break;
     }
     return prime;
@@ -111,7 +109,7 @@ long Rsa::produce_prime()
 /************************************
  * Вычисление НОД
  * *********************************/
-long Rsa::produce_gcd(const long a, const long b)
+long Rsa::getGCD(const long a, const long b)
 {
     long dividend = a;
     long divisor = b;
@@ -128,14 +126,14 @@ long Rsa::produce_gcd(const long a, const long b)
 /************************************
  * проверка числа на простоту
  * *********************************/
-bool Rsa::is_prime(const long digit)
+bool Rsa::isPrime(const long num)
 {
     int tmp = 2;
-    while (tmp < digit)
-        if (!(digit % tmp++))
+    while (tmp < num)
+        if (num % tmp++ == 0)
             break;
 
-    if (tmp == digit)
+    if (tmp == num)
         return true;
     return false;
 }

@@ -3,15 +3,15 @@ int main() {
 	Rsa rsa; // объявление переменной класса RSA (делают оба человека)
 
 // генерация ключей и шифрование сообщения
-	Key keys = rsa.produce_keys(); // генерация ключей (делает только тот, кто принимает)
+	Key keys = getKeys(); // генерация ключей (делает только тот, кто принимает)
 
 // ......отправка ключей.........
 
 	long crypt = 9635; // сообщение 
-	crypt = rsa.endecrypt(crypt,keys.ekey,keys.pkey); // шифрование 
+	crypt = rsa.endecrypt(crypt,keys.exp,keys.pub); // шифрование 
 // 						    (сообщение, экспонента, публичный ключ) 
 
-	crypt = rsa.endecrypt(crypt,keys.dkey,keys.pkey); // расшифровка 
+	crypt = rsa.endecrypt(crypt,keys.dkey,keys.pub); // расшифровка 
 //                    (зашифр. сообщение, приватный, публичный)
 
 	return 0;

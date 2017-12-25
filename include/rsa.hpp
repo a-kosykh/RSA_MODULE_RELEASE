@@ -2,8 +2,8 @@
 #include <ctime>
 typedef struct key
 {
-    long pkey;
-    long ekey;
+    long pub;
+    long exp;
     long dkey;
 } Key;
 
@@ -14,15 +14,15 @@ public:
     virtual ~Rsa();
 
 public:
-    Key produce_keys();
-    long endecrypt(const long msg, const long key, const long pkey);
+    Key getKeys();
+    long endecrypt(const long mess, const long key, const long publ);
 
 private:
-    long produce_pkey(const long prime1, const long prime2);
-    long produce_ekey(const long orla);
-    long produce_dkey(const long ekey, const long orla);
-    long produce_prime();
-    long produce_orla(const long prime1, const long prime2);
-    long produce_gcd(const long a, const long b);
-    bool is_prime(const long digit);
+    long getPub(const long p1, const long p2);
+    long getExp(const long euler);
+    long getDKey(const long exp, const long euler);
+    long getPrime();
+    long getEuler(const long p1, const long p2);
+    long getGCD(const long a, const long b);
+    bool isPrime(const long num);
 };
